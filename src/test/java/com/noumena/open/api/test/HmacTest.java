@@ -18,6 +18,7 @@ import java.util.UUID;
  */
 public class HmacTest {
 
+    String host = "http://uat.noumena.pro:8585";
     private static final String apiKey = "301c6be035ae4760b360f01d5c1be6c1";
     private static final String apiSecret = "d9006cad-4a29-41d8-b69b-cbfc46978f8e";
     private static final String apiPassphrase = "12345678";
@@ -60,7 +61,7 @@ public class HmacTest {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8585"+requestPath)
+                .url(host+requestPath)
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization",authorizationStr)
