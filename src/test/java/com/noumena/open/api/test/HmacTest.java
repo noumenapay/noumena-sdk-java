@@ -23,6 +23,45 @@ public class HmacTest {
 
 
     public static final String SIGN_SEPARATOR = ":";
+
+
+    @Test
+    public void getTest() throws Exception {
+        String timeStampStr = String.valueOf(System.currentTimeMillis());
+        String method = "GET";
+        String requestPath = "/api/v1/npay/cust/transaction";
+        String requestQueryStr = "page_num=1&page_size=20&cust_tx_id=2c060ae3-15ad-4799-a4ba-64437efe6d03";
+
+        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
+
+        String authorizationStr = "Noumena"
+                + SIGN_SEPARATOR
+                + apiKey
+                +SIGN_SEPARATOR
+                + timeStampStr
+                +SIGN_SEPARATOR
+                + sign;
+        System.out.println("Authorization:"+authorizationStr);
+        System.out.println("Access-Passphrase:"+apiPassphrase);
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(host+requestPath+"?"+requestQueryStr)
+                .get()
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization",authorizationStr)
+                .addHeader("Access-Passphrase",apiPassphrase)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println("result="+response.isSuccessful());
+        System.out.println();
+        if (response.isSuccessful()) {
+            System.out.println(response.body().string());
+        }else{
+            System.out.println("error...");
+        }
+    }
+
     @Test
     public void postTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
@@ -67,44 +106,9 @@ public class HmacTest {
                 .build();
         Response response = client.newCall(request).execute();
         System.out.println("result="+response.isSuccessful());
+        System.out.println();
         if (response.isSuccessful()) {
-            System.out.println("ooo=="+response.body().string());
-        }else{
-            System.out.println("error...");
-        }
-    }
-
-    @Test
-    public void getTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "GET";
-        String requestPath = "/api/v1/npay/cust/transaction";
-        String requestQueryStr = "page_num=1&page_size=20&cust_tx_id=2c060ae3-15ad-4799-a4ba-64437efe6d03";
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(host+requestPath+"?"+requestQueryStr)
-                .get()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        System.out.println("result="+response.isSuccessful());
-        if (response.isSuccessful()) {
-            System.out.println("ooo=="+response.body().string());
+            System.out.println(response.body().string());
         }else{
             System.out.println("error...");
         }
