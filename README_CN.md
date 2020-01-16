@@ -72,3 +72,15 @@
 amount=190&ont_id=did:ont:Ae9ujqUnAtH9yRiepRvLUE3t9R2NbCTZPG&to_address=AUol16ghiT9AtxRDtNeq3ovhWJ5iaY6iyd
 ```
 
+**例子**
+
+```
+origin sign data:{}1579185795117GET14db63d7f3614664ad1c71dd134a21dc/api/v1/customers/accounts?page_num=1&page_size=20
+
+Request Url:https://uat.noumena.pro/api/v1/customers/accounts?page_num=1&page_size=20
+Authorization:Noumena:14db63d7f3614664ad1c71dd134a21dc:1579185795117:5pVj45P4c+Q8LbGCZgS05WDq9b8/fpAKCDl6drmViW4=
+Access-Passphrase:12345678a
+
+{"code":0,"msg":"SUCCESS","result":{"total":7,"records":[{"acct_no":"3206","status":1,"create_time":1579159626000},{"acct_no":"3205","status":1,"create_time":1579159314000},{"acct_no":"3203","status":1,"create_time":1579158803000},{"acct_no":"3202","status":1,"create_time":1579158608000},{"acct_no":"3201","status":1,"create_time":1579157747000},{"acct_no":"acct-zzx","status":1,"create_time":1579144759000},{"acct_no":"acct-zzx3","status":1,"create_time":1579143521000}]}}
+
+```
