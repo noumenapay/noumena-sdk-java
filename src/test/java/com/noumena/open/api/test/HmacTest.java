@@ -40,6 +40,7 @@ public class HmacTest {
                 + timeStampStr
                 +SIGN_SEPARATOR
                 + sign;
+        System.out.println();
         System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
         System.out.println("Authorization:"+authorizationStr);
         System.out.println("Access-Passphrase:"+apiPassphrase);
@@ -62,93 +63,4 @@ public class HmacTest {
         }
     }
 
-    @Test
-    public void getNpayTxTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "GET";
-        String requestPath = "/api/v1/npay/cust/transaction";
-        String requestQueryStr = "page_num=1&page_size=20&cust_tx_id=2c060ae3-15ad-4799-a4ba-64437efe6d03";
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(host+requestPath+"?"+requestQueryStr)
-                .get()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
-    }
-
-    @Test
-    public void postTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "POST";
-        String requestPath = "/api/v1/npay/cust/transaction";
-        String requestQueryStr = "";
-
-        NPayDepositReq req = new NPayDepositReq();
-
-        req.setAcct_no("did:ont:ALaRqCkXSWaHMDc5sLEEMVMWqCNDFi5eRZ");
-        req.setCust_user_no("mw123");
-        req.setCust_tx_id(UUID.randomUUID().toString());
-        req.setCoin_type(CoinTypeEnum.PAX.value());
-        req.setTx_amount("10");
-        req.setBonus_coin_type(CoinTypeEnum.ONT.value());
-        req.setBonus_tx_amount("1");
-        req.setRemark("test deposit");
-
-        TreeMap<String,String> map = JSONObject.parseObject(req.toString(),TreeMap.class);
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, map);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
-        Request request = new Request.Builder()
-                .url(host+requestPath)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
-    }
 }
