@@ -1,14 +1,12 @@
 package com.noumena.open.api.test;
 
 import com.alibaba.fastjson.JSONObject;
-import com.noumena.open.api.dto.AccountKycReq;
-import com.noumena.open.api.dto.NPayDepositReq;
-import com.noumena.open.api.enums.CoinTypeEnum;
+import com.noumena.open.api.dto.DepositReq;
+import com.noumena.open.api.dto.NewCardReq;
 import com.noumena.open.api.util.HmacSHA256Base64Util;
 import okhttp3.*;
 import org.junit.Test;
 
-import java.util.Date;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -17,7 +15,7 @@ import java.util.UUID;
  * @version 1.0
  * @date 2019/12/11
  */
-public class KycTest {
+public class DepositTest {
 
     String host = "https://uat.noumena.pro";
     private static final String apiKey = "14db63d7f3614664ad1c71dd134a21dc";
@@ -28,37 +26,21 @@ public class KycTest {
     public static final String SIGN_SEPARATOR = ":";
 
     @Test
-    public void postKycTest() throws Exception {
+    public void postDepositTransactionTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
         String method = "POST";
-        String requestPath = "/api/v1/customers/accounts";
+        String requestPath = "/api/v1/deposit-transactions";
         String requestQueryStr = "";
 
-        AccountKycReq req = new AccountKycReq();
-        req.setMail("test01@noumena.pro");
-        req.setAcctNo("acct001");
-        req.setAcctName("test name001");
-        req.setFirstName("micky");
-        req.setLastName("Wang");
-        req.setMobile("1582170000");
-        req.setGender("male");
-        req.setBirthday("1990-01-01");
-        req.setCity("moon");
-        req.setState("moon");
-        req.setCountry("A");
-        req.setNationality("A");
-        req.setDocNo("1234");
-        req.setDocType("1");
-        req.setFrontDoc("no");
-        req.setBackDoc("no");
-        req.setMixDoc("no");
-        req.setCountryCode("96");
-        req.setAddress("street 1");
-        req.setZipcode("123456");
-        req.setMaidenName("mom");
-        req.setBankId("1002");
-//        req.setMailVerificationCode("123456"); //optional
-//        req.setMailToken("123456");  //optional
+        DepositReq req = new DepositReq();
+
+        req.setAcct_no("acct-zzx3");
+        req.setCard_no("622848003056012332");
+        req.setAmount("1");
+        req.setCoin_type("USDT");
+        req.setCust_tx_id(UUID.randomUUID().toString());
+        req.setRemark("test note");
+
 
         TreeMap<String,String> map = JSONObject.parseObject(req.toString(),TreeMap.class);
 
@@ -96,12 +78,13 @@ public class KycTest {
     }
 
 
+
     @Test
-    public void getAccountsKycTest() throws Exception {
+    public void getTxStatusTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
         String method = "GET";
-        String requestPath = "/api/v1/customers/accounts";
-        String requestQueryStr = "page_num=1&page_size=20&former_time=1578565459&latter_time=1579429459&time_sort=asc";
+        String requestPath = "/api/v1/deposit-transactions/"+"2020011910590413101433814"+"/status";
+        String requestQueryStr = "";
 
         String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
 
@@ -137,11 +120,11 @@ public class KycTest {
 
 
     @Test
-    public void getAccountKycStatusTest() throws Exception {
+    public void getDepositListTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
         String method = "GET";
-        String requestPath = "/api/v1/customers/accounts";
-        String requestQueryStr = "acct_no=acct001";
+        String requestPath = "/api/v1/deposit-transactions";
+        String requestQueryStr = "acct_no=acct-zzx&page_num=1&page_size=20&former_time=1578565459&latter_time=1579429459&time_sort=asc";
 
         String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
 
@@ -174,5 +157,6 @@ public class KycTest {
             System.out.println("error... " + response.body().string());
         }
     }
+
 
 }
