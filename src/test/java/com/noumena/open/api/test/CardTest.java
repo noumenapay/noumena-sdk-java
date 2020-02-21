@@ -1,5 +1,6 @@
 package com.noumena.open.api.test;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.noumena.open.api.dto.ActiveCardReq;
 import com.noumena.open.api.dto.NPayDepositReq;
@@ -36,8 +37,8 @@ public class CardTest {
 
         NewCardReq req = new NewCardReq();
 
-        req.setAcct_no("acct001");
-        req.setBank_id("1002");
+        req.setAcct_no("acct5000");
+        req.setCard_type_id("50000001");
         req.setCust_tx_id(UUID.randomUUID().toString());
 
 

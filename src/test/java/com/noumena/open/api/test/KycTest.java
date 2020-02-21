@@ -57,7 +57,7 @@ public class KycTest {
         req.setAddress("street 1");
         req.setZipcode("123456");
         req.setMaidenName("mom");
-        req.setBankId("1002");
+        req.setCardTypeId("50000001");
 //        req.setMailVerificationCode("123456"); //optional
 //        req.setMailToken("123456");  //optional
 

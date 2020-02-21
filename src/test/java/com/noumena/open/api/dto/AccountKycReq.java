@@ -133,10 +133,10 @@ public class AccountKycReq {
     private String maidenName;
 
     /**
-     * 开卡银行id
+     * 银行卡类型id
      */
-    @JSONField(name = "bank_id")
-    private String bankId;
+    @JSONField(name = "card_type_id")
+    private String cardTypeId;
 
     /**
      * kyc 其他信息
@@ -551,18 +551,12 @@ public class AccountKycReq {
         this.maidenName = maidenName == null ? null : maidenName.trim();
     }
 
-
-    public String getBankId() {
-        return bankId;
+    public String getCardTypeId() {
+        return cardTypeId;
     }
 
-    /**
-     * 设置开卡银行id
-     *
-     * @param bankId 开卡银行id
-     */
-    public void setBankId(String bankId) {
-        this.bankId = bankId == null ? null : bankId.trim();
+    public void setCardTypeId(String cardTypeId) {
+        this.cardTypeId = cardTypeId == null ? null : cardTypeId.trim();
     }
 
     /**
