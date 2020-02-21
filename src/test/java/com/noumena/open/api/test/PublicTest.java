@@ -26,11 +26,50 @@ public class PublicTest {
     public static final String SIGN_SEPARATOR = ":";
 
     @Test
+    public void getCardTypeListTest() throws Exception {
+        String timeStampStr = String.valueOf(System.currentTimeMillis());
+        String method = "GET";
+        String requestPath = "/api/v1/card/type";
+        String requestQueryStr = "";
+
+        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
+
+        String authorizationStr = "Noumena"
+                + SIGN_SEPARATOR
+                + apiKey
+                +SIGN_SEPARATOR
+                + timeStampStr
+                +SIGN_SEPARATOR
+                + sign;
+        System.out.println();
+        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
+        System.out.println("Authorization:"+authorizationStr);
+        System.out.println("Access-Passphrase:"+apiPassphrase);
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(host+requestPath+"?"+requestQueryStr)
+                .get()
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization",authorizationStr)
+                .addHeader("Access-Passphrase",apiPassphrase)
+                .build();
+        Response response = client.newCall(request).execute();
+        //System.out.println("result="+response.isSuccessful());
+        System.out.println();
+        if (response.isSuccessful()) {
+            System.out.println(response.body().string());
+        }else{
+            System.out.println("error... " + response.body().string());
+        }
+    }
+
+    @Test
     public void getRatesTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
         String method = "GET";
         String requestPath = "/api/v1/rates";
-        String requestQueryStr = "bank_id="+"1001";
+        String requestQueryStr = "card_type_id="+"50000001";
 
         String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
 
