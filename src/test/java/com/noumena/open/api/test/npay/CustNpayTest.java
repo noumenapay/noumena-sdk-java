@@ -1,4 +1,4 @@
-package com.noumena.open.api.test;
+package com.noumena.open.api.test.npay;
 
 import com.alibaba.fastjson.JSONObject;
 import com.noumena.open.api.dto.NPayDepositReq;
@@ -15,7 +15,7 @@ import java.util.UUID;
  * @version 1.0
  * @date 2019/12/11
  */
-public class UserNpayTest {
+public class CustNpayTest {
 
     String host = "https://uat.noumena.pro";
     private static final String apiKey = "061e2f174e834e3e9f9df9fd86410c64";
@@ -28,11 +28,11 @@ public class UserNpayTest {
 
 
     @Test
-    public void getUserTransaction() throws Exception {
+    public void getNpayTxTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
         String method = "GET";
-        String requestPath = "/api/v1/npay/transactions";
-        String requestQueryStr = "acct_no=did:ont:AMyePQSNqfpYc8tf5mnV2Yu7rGgczZ1qmn&page_num=1&page_size=20";
+        String requestPath = "/api/v1/npay/cust/transaction";
+        String requestQueryStr = "page_num=1&page_size=20";
 
         String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
 
@@ -67,13 +67,26 @@ public class UserNpayTest {
     }
 
     @Test
-    public void getUserAsset() throws Exception {
+    public void postDepositTest() throws Exception {
         String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "GET";
-        String requestPath = "/api/v1/npay/asset";
-        String requestQueryStr = "acct_no=did:ont:AMyePQSNqfpYc8tf5mnV2Yu7rGgczZ1qmn";
+        String method = "POST";
+        String requestPath = "/api/v1/npay/cust/transaction";
+        String requestQueryStr = "";
 
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
+        NPayDepositReq req = new NPayDepositReq();
+
+        req.setAcct_no("did:ont:ALaRqCkXSWaHMDc5sLEEMVMWqCNDFi5eRZ");
+        req.setCust_user_no("mw123");
+        req.setCust_tx_id(UUID.randomUUID().toString());
+        req.setCoin_type(CoinTypeEnum.PAX.value());
+        req.setTx_amount("10");
+        req.setBonus_coin_type(CoinTypeEnum.ONT.value());
+        req.setBonus_tx_amount("1");
+        req.setRemark("test deposit");
+
+        TreeMap<String,String> map = JSONObject.parseObject(req.toString(),TreeMap.class);
+
+        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, map);
 
         String authorizationStr = "Noumena"
                 + SIGN_SEPARATOR
@@ -83,14 +96,15 @@ public class UserNpayTest {
                 +SIGN_SEPARATOR
                 + sign;
         System.out.println();
-        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
         System.out.println("Authorization:"+authorizationStr);
         System.out.println("Access-Passphrase:"+apiPassphrase);
 
         OkHttpClient client = new OkHttpClient();
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
         Request request = new Request.Builder()
-                .url(host+requestPath+"?"+requestQueryStr)
-                .get()
+                .url(host+requestPath)
+                .post(body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization",authorizationStr)
                 .addHeader("Access-Passphrase",apiPassphrase)

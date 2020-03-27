@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.noumena.open.api.dto.DepositReq;
 import com.noumena.open.api.dto.NewCardReq;
 import com.noumena.open.api.util.HmacSHA256Base64Util;
+import com.noumena.open.api.util.HttpUtil;
 import okhttp3.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.TreeMap;
@@ -23,139 +25,47 @@ public class DepositTest {
     private static final String apiPassphrase = "12345678a";
 
 
-    public static final String SIGN_SEPARATOR = ":";
+    @Before
+    public void setUp() throws Exception {
+        HttpUtil.init(host,apiKey,apiSecret,apiPassphrase);
+    }
 
     @Test
     public void postDepositTransactionTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "POST";
+
         String requestPath = "/api/v1/deposit-transactions";
         String requestQueryStr = "";
 
         DepositReq req = new DepositReq();
+        req.setAcct_no("acct03");  //uat02  {"currency_type":"USD","deposit_usdt":"24.91214859","currency_amount":"24.91","exchange_rate":"1","exchange_fee_rate":"0.5","exchange_fee":"25","loading_fee":"0.1875"}
+        req.setCard_no("4323592800000050101");//4366354500000011217
 
-        req.setAcct_no("acct-zzx3");
-        req.setCard_no("622848003056012332");
-        req.setAmount("1");
+//        req.setAcct_no("uat02");  //uat02      {"currency_type":"USD","deposit_usdt":"24.94949494","currency_amount":"24.94","exchange_rate":"1","exchange_fee_rate":"0.5","exchange_fee":"25","loading_fee":"0.3"}
+//        req.setCard_no("4366354500000011217");//4366354500000011217
+
+        req.setAmount("5");
         req.setCoin_type("USDT");
         req.setCust_tx_id(UUID.randomUUID().toString());
-        req.setRemark("test note");
+        req.setRemark("mock test note");
 
-
-        TreeMap<String,String> map = JSONObject.parseObject(req.toString(),TreeMap.class);
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, map);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println();
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
-        Request request = new Request.Builder()
-                .url(host+requestPath)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
     }
 
 
 
     @Test
     public void getTxStatusTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "GET";
-        String requestPath = "/api/v1/deposit-transactions/"+"2020011910590413101433814"+"/status";
+        String requestPath = "/api/v1/deposit-transactions/"+"2020022109424285101437691"+"/status";
         String requestQueryStr = "";
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println();
-        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(host+requestPath+"?"+requestQueryStr)
-                .get()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
+        HttpUtil.get(requestPath,requestQueryStr);
     }
 
 
     @Test
     public void getDepositListTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "GET";
         String requestPath = "/api/v1/deposit-transactions";
-        String requestQueryStr = "acct_no=acct-zzx&page_num=1&page_size=20&former_time=1578565459&latter_time=1579429459&time_sort=asc";
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, null);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println();
-        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(host+requestPath+"?"+requestQueryStr)
-                .get()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
+        String requestQueryStr = "acct_no=acct5000&page_num=1&page_size=20&former_time=1578565459&latter_time=1579429459&time_sort=asc";
+        HttpUtil.get(requestPath,requestQueryStr);
     }
 
 

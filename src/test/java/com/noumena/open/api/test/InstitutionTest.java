@@ -1,0 +1,106 @@
+package com.noumena.open.api.test;
+
+import com.alibaba.fastjson.JSONObject;
+import com.noumena.open.api.dto.CalcCurrencyReq;
+import com.noumena.open.api.dto.PublickeyReq;
+import com.noumena.open.api.util.HmacSHA256Base64Util;
+import com.noumena.open.api.util.HttpUtil;
+import okhttp3.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * @author zhouq
+ * @version 1.0
+ * @date 2019/12/11
+ */
+public class InstitutionTest {
+
+    String host = "https://uat.noumena.pro";
+    private static final String apiKey = "14db63d7f3614664ad1c71dd134a21dc";
+    private static final String apiSecret = "ed8cb3a0-8365-4340-9d9c-33f051eedccd";
+    private static final String apiPassphrase = "12345678a";
+
+
+    @Before
+    public void setUp() throws Exception {
+        HttpUtil.init(host,apiKey,apiSecret,apiPassphrase);
+    }
+
+
+    @Test
+    public void getCardTypeListTest() throws Exception {
+        String requestPath = "/api/v1/institution/card/type";
+        String requestQueryStr = "";
+        HttpUtil.get(requestPath,requestQueryStr);
+//
+    }
+
+
+
+    @Test
+    public void getBalanceTest() throws Exception {
+        String requestPath = "/api/v1/institution/balance";
+        String requestQueryStr = "";
+        HttpUtil.get(requestPath,requestQueryStr);
+    }
+
+    @Test
+    public void postPublickeyTest() throws Exception {
+        String requestPath = "/api/v1/institution/publickey";
+        String requestQueryStr = "";
+        PublickeyReq req = new PublickeyReq();
+        req.setPublic_key("031194af2b8ad8cba709509a630dfcc3746c24dfbbe9af48264df5663ad308e16f");
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+    }
+
+    @Test
+    public void getInstitutionInfoTest() throws Exception {
+        String requestPath = "/api/v1/institution/info";
+        String requestQueryStr = "";
+        HttpUtil.get(requestPath,requestQueryStr);
+
+    }
+
+
+    @Test
+    public void getRatesTest() throws Exception {
+        String requestPath = "/api/v1/institution/rates";
+        String requestQueryStr = "card_type_id="+"70000001";
+        HttpUtil.get(requestPath,requestQueryStr);
+    }
+
+    @Test
+    public void getCalculationCurrencyTest() throws Exception {
+
+        String requestPath = "/api/v1/institution/calculation/currency";
+        String requestQueryStr = "";
+
+        CalcCurrencyReq req = new CalcCurrencyReq();
+        req.setCard_type_id("70000001");
+        req.setCoin_amount("50");
+        req.setCoin_type("USDT");
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+    }
+
+//    @Test
+//    public void getCalculationCryptoTest() throws Exception {
+//
+//        String timeStampStr = String.valueOf(System.currentTimeMillis());
+//        String method = "POST";
+//        String requestPath = "/api/v1/calculation/crypto";
+//        String requestQueryStr = "";
+//
+//        CalcCryptoReq req = new CalcCryptoReq();
+//
+//        req.setCard_type_id("50000001");
+//        req.setCurrency_amount("10");
+//        req.setCoin_type("USDT");
+//
+//        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+//    }
+}
