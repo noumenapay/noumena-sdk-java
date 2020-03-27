@@ -58,6 +58,7 @@ public class HmacSHA256Base64Util {
             //删除最后一个拼接符
             strBody = strBody.substring(0,strBody.length()-1);
         }
+        System.out.println(strBody);
         return strBody;
     }
 

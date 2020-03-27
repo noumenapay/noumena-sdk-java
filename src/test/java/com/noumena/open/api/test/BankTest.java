@@ -2,9 +2,13 @@ package com.noumena.open.api.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.noumena.open.api.dto.BankBalanceReq;
+import com.noumena.open.api.dto.BankTxRecordsReq;
 import com.noumena.open.api.dto.DepositReq;
 import com.noumena.open.api.util.HmacSHA256Base64Util;
+import com.noumena.open.api.util.HttpUtil;
 import okhttp3.*;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -25,152 +29,44 @@ public class BankTest {
     private static final String apiPassphrase = "12345678a";
 
 
-    public static final String SIGN_SEPARATOR = ":";
+    @Before
+    public void setUp() throws Exception {
+        HttpUtil.init(host,apiKey,apiSecret,apiPassphrase);
+    }
 
     @Test
     public void getBankCardActiveTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "POST";
+
         String requestPath = "/api/v1/bank/account-status";
         String requestQueryStr = "";
-
         Map req = new HashMap<>();
-
         req.put("card_no","822848003056012013");
+        HttpUtil.post(requestPath,requestQueryStr,JSON.toJSONString(req));
 
-        TreeMap<String,String> map = JSONObject.parseObject(JSON.toJSONString(req),TreeMap.class);
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, map);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println();
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
-        Request request = new Request.Builder()
-                .url(host+requestPath)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
     }
 
 
 
     @Test
     public void getBankCardBalanceTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "POST";
         String requestPath = "/api/v1/bank/balance";
         String requestQueryStr = "";
 
-        Map req = new HashMap<>();
-
-        req.put("card_no","822848003056012013");
-
-        TreeMap<String,String> map = JSONObject.parseObject(JSON.toJSONString(req),TreeMap.class);
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, map);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println();
-        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
-        Request request = new Request.Builder()
-                .url(host+requestPath)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
+        BankBalanceReq req = new BankBalanceReq();
+        req.setCard_no("822848003056012013");
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
     }
 
 
     @Test
     public void getBankTransactionRecordTest() throws Exception {
-        String timeStampStr = String.valueOf(System.currentTimeMillis());
-        String method = "POST";
+
         String requestPath = "/api/v1/bank/transaction-record";
         String requestQueryStr = "";
 
-        Map req = new HashMap<>();
-
-        req.put("card_no","822848003056012013");
-        //req.put("month_year","012020");
-        req.put("former_month_year","012020");
-        req.put("latter_month_year","012020");
-
-        TreeMap<String,String> map = JSONObject.parseObject(JSON.toJSONString(req),TreeMap.class);
-
-        String sign = HmacSHA256Base64Util.sign(timeStampStr, method, requestPath,  requestQueryStr, apiKey, apiSecret, map);
-
-        String authorizationStr = "Noumena"
-                + SIGN_SEPARATOR
-                + apiKey
-                +SIGN_SEPARATOR
-                + timeStampStr
-                +SIGN_SEPARATOR
-                + sign;
-        System.out.println();
-        System.out.println("Request Url:"+ host+requestPath+"?"+requestQueryStr );
-        System.out.println("Authorization:"+authorizationStr);
-        System.out.println("Access-Passphrase:"+apiPassphrase);
-
-        OkHttpClient client = new OkHttpClient();
-        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, JSONObject.toJSONString(req));
-        Request request = new Request.Builder()
-                .url(host+requestPath)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization",authorizationStr)
-                .addHeader("Access-Passphrase",apiPassphrase)
-                .build();
-        Response response = client.newCall(request).execute();
-        //System.out.println("result="+response.isSuccessful());
-        System.out.println();
-        if (response.isSuccessful()) {
-            System.out.println(response.body().string());
-        }else{
-            System.out.println("error... " + response.body().string());
-        }
+        BankTxRecordsReq req = new BankTxRecordsReq();
+        req.setCard_no("822848003056012013");
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
     }
 
 }
