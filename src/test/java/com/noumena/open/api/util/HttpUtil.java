@@ -100,7 +100,7 @@ public class HttpUtil {
 
     public static void  put(String requestPath,String requestQueryStr,String reqString) throws Exception{
         String SIGN_SEPARATOR = ":";
-        String method = "POST";
+        String method = "PUT";
         String timeStampStr = String.valueOf(System.currentTimeMillis());
         TreeMap<String,String> map = JSONObject.parseObject(reqString,TreeMap.class);
 
