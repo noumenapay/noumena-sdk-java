@@ -25,11 +25,11 @@ public class HmacUtil {
         }
     }
 
-    public static String sign(String timestamp, String action, String secretKey) throws Exception {
+    public static String sign(String timestamp, String action, TreeMap<String, Object> body, String secretKey) throws Exception {
         if (StringUtils.isEmpty(secretKey) || StringUtils.isEmpty(action)) {
             throw new Exception("secretKey error");
         }
-        String preHash = preHash(timestamp, action);
+        String preHash = preHash(timestamp, action, body);
         System.out.println("origin sign data:{}" + preHash);
         byte[] secretKeyBytes = secretKey.getBytes(CharsetEnum.UTF_8.charset());
         SecretKeySpec secretKeySpec = new SecretKeySpec(secretKeyBytes, algorithm);
@@ -38,14 +38,18 @@ public class HmacUtil {
         return Base64.getEncoder().encodeToString(mac.doFinal(preHash.getBytes(CharsetEnum.UTF_8.charset())));
     }
 
-    public static String preHash(String timestamp, String action) throws UnsupportedEncodingException {
+    public static String preHash(String timestamp, String method, TreeMap<String, Object> body) throws UnsupportedEncodingException {
         StringBuilder preHash = new StringBuilder();
         preHash.append(timestamp);
-        preHash.append(action);
+        preHash.append(method.toUpperCase());
+
+        if (body != null && body.size() > 0) {
+            preHash.append(appendBody(body));
+        }
         return preHash.toString();
     }
 
-    public static String appendBody(TreeMap<String, String> params) {
+    public static String appendBody(TreeMap<String, Object> params) {
         StringBuilder str = new StringBuilder("");
         Set<String> setKey = params.keySet();
         for (String key : setKey) {
