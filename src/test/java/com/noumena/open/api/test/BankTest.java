@@ -69,6 +69,9 @@ public class BankTest {
 
         BankTxRecordsReq req = new BankTxRecordsReq();
         req.setCard_no("822848003056012013");
+        req.setFormer_month_year("012020");
+        req.setLatter_month_year("032020");
+
         HttpUtil.post(requestPath,requestQueryStr,req.toString());
     }
 
