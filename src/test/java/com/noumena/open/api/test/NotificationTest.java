@@ -15,11 +15,16 @@ public class NotificationTest {
     public void notificationTest() {
         //what you receive in header
         String timeStamp = "1585556940084";
-        String signature = "IovphWdYmsGSMislwxzlgGkjoSDqQEDugjeKl/9JecU=";
+        String signature = "Qb68D7pqh0cn/tmVxHH++9NMI3N2Ysrti6ZSC2a0pZM=";
         //action, params and your secret
         String action = "kyc-status";
         String secret = "ba3a3c0c38dc434eb25225ab06135743";
-        String params = "{\"acct_no\":\"acct009\",\"card_type_id\":\"70000001\",\"status\":1}";
+        String params = "{\n" +
+                "    \"action\": \"kyc-status\",\n" +
+                "    \"events\": [\n" +
+                "        \"{\\\"id\\\":\\\"bc76488ddda4\\\",\\\"create_time\\\":1585293811000,\\\"params\\\":{\\\"card_type_id\\\":\\\"50010003\\\",\\\"acct_no\\\":\\\"032500004\\\",\\\"status\\\":1}}\"\n" +
+                "    ]\n" +
+                "}";
         TreeMap<String, Object> treeMap = JSONObject.parseObject(params, TreeMap.class);
 
         //verify
@@ -28,6 +33,8 @@ public class NotificationTest {
             System.out.println(sign);
             if (sign.equals(signature)) {
                 System.out.println("signature is right");
+            }else {
+                System.out.println("signature is wrong");
             }
         } catch (Exception e) {
             e.printStackTrace();
