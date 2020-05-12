@@ -68,5 +68,10 @@ public class DepositTest {
         HttpUtil.get(requestPath,requestQueryStr);
     }
 
-
+    @Test
+    public void getPriceTest() throws Exception {
+        String requestPath = "/api/v1/deposit-transactions/price";
+        String requestQueryStr = "";
+        HttpUtil.get(requestPath,requestQueryStr);
+    }
 }

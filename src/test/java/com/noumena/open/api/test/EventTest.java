@@ -50,4 +50,10 @@ public class EventTest {
         HttpUtil.put(requestPath,requestQueryStr,JSON.toJSONString(map));
     }
 
+    @Test
+    public void getEventsTestTest() throws Exception {
+        String requestPath = "/api/v1/events/test";
+        String requestQueryStr = "";
+        HttpUtil.post(requestPath,requestQueryStr,JSON.toJSONString(new HashMap<>()));
+    }
 }
