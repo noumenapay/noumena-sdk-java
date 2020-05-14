@@ -1,6 +1,7 @@
 package com.noumena.open.api.test;
 
 import com.alibaba.fastjson.JSONObject;
+import com.noumena.open.api.dto.CalcCryptoReq;
 import com.noumena.open.api.dto.CalcCurrencyReq;
 import com.noumena.open.api.dto.PublickeyReq;
 import com.noumena.open.api.util.HmacSHA256Base64Util;
@@ -75,32 +76,30 @@ public class InstitutionTest {
     }
 
     @Test
-    public void getCalculationCurrencyTest() throws Exception {
+    public void getEstimationCurrencyTest() throws Exception {
 
-        String requestPath = "/api/v1/institution/calculation/currency";
+        String requestPath = "/api/v1/institution/estimation/currency";
         String requestQueryStr = "";
 
         CalcCurrencyReq req = new CalcCurrencyReq();
-        req.setCard_type_id("70000001");
-        req.setCoin_amount("50");
-        req.setCoin_type("USDT");
+        req.setCard_type_id("50000001");
+        req.setCoin_amount("0.1");
+        req.setCoin_type("BTC");
         HttpUtil.post(requestPath,requestQueryStr,req.toString());
     }
 
-//    @Test
-//    public void getCalculationCryptoTest() throws Exception {
-//
-//        String timeStampStr = String.valueOf(System.currentTimeMillis());
-//        String method = "POST";
-//        String requestPath = "/api/v1/calculation/crypto";
-//        String requestQueryStr = "";
-//
-//        CalcCryptoReq req = new CalcCryptoReq();
-//
-//        req.setCard_type_id("50000001");
-//        req.setCurrency_amount("10");
-//        req.setCoin_type("USDT");
-//
-//        HttpUtil.post(requestPath,requestQueryStr,req.toString());
-//    }
+    @Test
+    public void getEstimationCryptoTest() throws Exception {
+
+        String requestPath = "/api/v1/institution/estimation/crypto";
+        String requestQueryStr = "";
+
+        CalcCryptoReq req = new CalcCryptoReq();
+
+        req.setCard_type_id("50000001");
+        req.setCurrency_amount("10");
+        req.setCoin_type("USDT");
+
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+    }
 }
