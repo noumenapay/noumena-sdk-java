@@ -1,23 +1,15 @@
 package com.noumena.open.api.test;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.github.ontio.common.Helper;
-import com.github.ontio.crypto.SignatureScheme;
 import com.github.ontio.sdk.manager.ECIES;
 import com.noumena.open.api.dto.BankBalanceReq;
 import com.noumena.open.api.dto.BankTxRecordsReq;
-import com.noumena.open.api.dto.DepositReq;
-import com.noumena.open.api.util.HmacSHA256Base64Util;
 import com.noumena.open.api.util.HttpUtil;
-import okhttp3.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
 
 /**
  * @author zhouq

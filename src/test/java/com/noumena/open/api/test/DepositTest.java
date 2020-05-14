@@ -1,15 +1,11 @@
 package com.noumena.open.api.test;
 
-import com.alibaba.fastjson.JSONObject;
+import com.noumena.open.api.dto.DepositFiatAmountReq;
 import com.noumena.open.api.dto.DepositReq;
-import com.noumena.open.api.dto.NewCardReq;
-import com.noumena.open.api.util.HmacSHA256Base64Util;
 import com.noumena.open.api.util.HttpUtil;
-import okhttp3.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -31,20 +27,68 @@ public class DepositTest {
     }
 
     @Test
-    public void postDepositTransactionTest() throws Exception {
+    public void postDepositWithUsdtTest() throws Exception {
 
         String requestPath = "/api/v1/deposit-transactions";
+        String requestQueryStr = "";
+
+        DepositReq req = new DepositReq();
+        req.setAcct_no("acct03");
+        req.setCard_no("4323592800000050101");
+
+        req.setAmount("20.12345678");
+        req.setCoin_type("USDT");
+        req.setCust_tx_id(UUID.randomUUID().toString());
+        req.setRemark("mock test note");
+
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+    }
+    @Test
+    public void postDepositWithUsdt2Test() throws Exception {
+
+        String requestPath = "/api/v1/deposit-transactions/fiat-amount";
+        String requestQueryStr = "";
+
+        DepositFiatAmountReq req = new DepositFiatAmountReq();
+        req.setAcct_no("acct03");
+        req.setCard_no("4323592800000050101");
+
+        req.setCredited_amount("20");
+        req.setCoin_type("USDT");
+        req.setCust_tx_id(UUID.randomUUID().toString());
+        req.setRemark("mock test note");
+
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+    }
+    @Test
+    public void postDepositWithCryptoTest() throws Exception {
+
+        String requestPath = "/api/v1/deposit-transactions/crypto";
         String requestQueryStr = "";
 
         DepositReq req = new DepositReq();
         req.setAcct_no("acct03");  //uat02  {"currency_type":"USD","deposit_usdt":"24.91214859","currency_amount":"24.91","exchange_rate":"1","exchange_fee_rate":"0.5","exchange_fee":"25","loading_fee":"0.1875"}
         req.setCard_no("4323592800000050101");//4366354500000011217
 
-//        req.setAcct_no("uat02");  //uat02      {"currency_type":"USD","deposit_usdt":"24.94949494","currency_amount":"24.94","exchange_rate":"1","exchange_fee_rate":"0.5","exchange_fee":"25","loading_fee":"0.3"}
-//        req.setCard_no("4366354500000011217");//4366354500000011217
-
         req.setAmount("5");
-        req.setCoin_type("USDT");
+        req.setCoin_type("ETH");
+        req.setCust_tx_id(UUID.randomUUID().toString());
+        req.setRemark("mock test note");
+
+        HttpUtil.post(requestPath,requestQueryStr,req.toString());
+    }
+    @Test
+    public void postDepositWithCrypto2Test() throws Exception {
+
+        String requestPath = "/api/v1/deposit-transactions/crypto/fiat-amount";
+        String requestQueryStr = "";
+
+        DepositFiatAmountReq req = new DepositFiatAmountReq();
+        req.setAcct_no("acct03");
+        req.setCard_no("4323592800000050101");
+
+        req.setCredited_amount("20");
+        req.setCoin_type("BTC");
         req.setCust_tx_id(UUID.randomUUID().toString());
         req.setRemark("mock test note");
 
