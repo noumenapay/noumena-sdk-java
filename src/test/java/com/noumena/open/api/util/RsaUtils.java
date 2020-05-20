@@ -1,5 +1,7 @@
-package com.noumena.open.api.test;
+package com.noumena.open.api.util;
 
+
+import org.bouncycastle.util.encoders.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.security.Key;
@@ -10,7 +12,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import javax.crypto.Cipher;
@@ -46,7 +47,7 @@ public class RsaUtils {
    */
   public static byte[] decryptByPrivateKey(byte[] encryptedData, String privateKey) {
     try {
-      byte[] keyBytes = Base64.getDecoder().decode(privateKey);
+      byte[] keyBytes = Base64Utils.decode(privateKey);
       PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
       KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
       Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
@@ -84,7 +85,7 @@ public class RsaUtils {
    */
   public static byte[] encryptByPublicKey(byte[] data, String publicKey) {
     try {
-      byte[] keyBytes = Base64.getDecoder().decode(publicKey);
+      byte[] keyBytes = Base64Utils.decode(publicKey);
       X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
       KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
       Key publicK = keyFactory.generatePublic(x509KeySpec);
@@ -126,7 +127,7 @@ public class RsaUtils {
    */
   public static String getPrivateKey(Map<String, Object> keyMap) throws Exception {
     Key key = (Key) keyMap.get(PRIVATE_KEY);
-    return new String(Base64.getEncoder().encode(key.getEncoded()));
+    return Base64Utils.encode(key.getEncoded());
   }
 
   /**
@@ -136,7 +137,7 @@ public class RsaUtils {
    */
   public static String getPublicKey(Map<String, Object> keyMap) throws Exception {
     Key key = (Key) keyMap.get(PUBLIC_KEY);
-    return new String(Base64.getEncoder().encode(key.getEncoded()));
+    return Base64Utils.encode(key.getEncoded());
   }
 
   /**
@@ -158,12 +159,12 @@ public class RsaUtils {
   public static void main(String[] args) throws Exception {
     Map<String, Object> map = RsaUtils.genKeyPair();
     String publicKey = RsaUtils.getPublicKey(map);
-    System.out.println("publicKey: "+publicKey);
+    System.out.println("String publicKey= \""+publicKey+"\"");
     String privateKey = RsaUtils.getPrivateKey(map);
-    System.out.println("privateKey: "+privateKey);
+    System.out.println("String privateKey= \""+privateKey+"\"");
     String data = "12345678a";
     byte[] endata = RsaUtils.encryptByPublicKey(data.getBytes(),publicKey);
-    System.out.println(new String(Base64.getEncoder().encode(endata)));
+    System.out.println(Base64Utils.encode(endata));
     String rspContent = new String(RsaUtils.decryptByPrivateKey(endata, privateKey));
     System.out.println(rspContent);
   }
